@@ -121,13 +121,13 @@ def main():
                 memory = pickle.load(handle)
             
         task_info, train_loader, val_loader, test_loader, for_memory = inc_dataset.new_task(memory)
-        print(task_info)
-        print(inc_dataset.sample_per_task_testing)
+        print('Task info', task_info)
+        print('Sample per task testing', inc_dataset.sample_per_task_testing)
         args.sample_per_task_testing = inc_dataset.sample_per_task_testing
         
         
         
-        main_learner=Learner(model=model,args=args,trainloader=train_loader, testloader=test_loader, use_cuda=use_cuda)
+        main_learner=Learner(model=model, args=args, trainloader=train_loader, testloader=test_loader, use_cuda=use_cuda)
         
         main_learner.learn()
         memory = inc_dataset.get_memory(memory, for_memory)       

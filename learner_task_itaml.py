@@ -24,7 +24,7 @@ class ResNet_features(nn.Module):
         return x
     
 class Learner():
-    def __init__(self,model,args,trainloader,testloader, use_cuda):
+    def __init__(self, model, args, trainloader, testloader, use_cuda):
         self.model=model
         self.best_model=model
         self.args=args
@@ -132,7 +132,7 @@ class Learner():
                         p=copy.deepcopy(q)
                         
                     class_inputs = inputs[idx]
-                    class_targets_one_hot= targets_one_hot[idx]
+                    class_targets_one_hot = targets_one_hot[idx]
                     class_targets = targets[idx]
                     
                     if(self.args.sess==task_idx and self.args.sess==4 and self.args.dataset=="svhn"):
@@ -151,7 +151,7 @@ class Learner():
                         self.optimizer.step()
 
                     for i,p in enumerate(model.parameters()):
-                        if(num_updates==0):
+                        if (num_updates==0):
                             reptile_grads[i] = [p.data]
                         else:
                             reptile_grads[i].append(p.data)
@@ -326,8 +326,10 @@ class Learner():
                         target_set = np.unique(targets)
 
                         if self.use_cuda:
-                            inputs, targets_one_hot,targets = inputs.cuda(), targets_one_hot.cuda(),targets.cuda()
-                        inputs, targets_one_hot, targets = torch.autograd.Variable(inputs), torch.autograd.Variable(targets_one_hot) ,torch.autograd.Variable(targets)
+                            inputs, targets_one_hot, targets = inputs.cuda(), targets_one_hot.cuda(), targets.cuda()
+                        inputs, targets_one_hot, targets = torch.autograd.Variable(inputs),\
+                                                           torch.autograd.Variable(targets_one_hot),\
+                                                           torch.autograd.Variable(targets)
 
                         _, outputs = meta_model(inputs)
                         class_pre_ce=outputs.clone()
@@ -413,9 +415,9 @@ class Learner():
                     task_max = outputs[i][ai:bi][task_argmax]
                     
                     if ( j not in meta_task_test_list.keys()):
-                        meta_task_test_list[j] = [[task_argmax,task_max, output_base_max,targets[i]]]
+                        meta_task_test_list[j] = [[task_argmax, task_max, output_base_max, targets[i]]]
                     else:
-                        meta_task_test_list[j].append([task_argmax,task_max, output_base_max,targets[i]])
+                        meta_task_test_list[j].append([task_argmax, task_max, output_base_max, targets[i]])
             del meta_model
                                 
         acc_task = {}
@@ -426,7 +428,9 @@ class Learner():
                     acc_task[i] += class_acc[i*self.args.class_per_task+j]/self.args.sample_per_task_testing[i] * 100
                 except:
                     pass
-        print("\n".join([str(acc_task[k]).format(".4f") for k in acc_task.keys()]) )    
+        print('>>> Task accuracy')
+        print("\n".join([str(acc_task[k]).format(".4f") for k in acc_task.keys()]) )
+        print('>>> Class accuracy')
         print(class_acc)
         
         with open(self.args.savepoint + "/meta_task_test_list_"+str(task_idx)+".pickle", 'wb') as handle:
