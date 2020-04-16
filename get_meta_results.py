@@ -57,11 +57,10 @@ def get_correct(acc_task, task, chunks, start_point, class_per_task):
     return correct, correct2
 
 
-def get_mata_score(p, task, chunks):
-    with open(p + "/sample_per_task_testing_" + str(task) + ".pickle", 'rb') as handle:
+def get_mata_score(p, task, chunks, class_per_task):
+    with open(p + "/sample_per_task_testing_" + str(int(class_per_task)-1) + ".pickle", 'rb') as handle:
         task_samples = pickle.load(handle)
     total_samples = np.sum([task_samples[x] for x in range(task + 1)])
-    class_per_task = 10
     with open(p + "/meta_task_test_list_" + str(task) + ".pickle", 'rb') as handle:
         acc_task = pickle.load(handle)
     correct = 0
